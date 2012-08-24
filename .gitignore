@@ -1,6 +1,15 @@
-*.class
+# Eclipse related (and M2e)
+.classpath
+.project
+.settings/
 
-# Package Files #
-*.jar
-*.war
-*.ear
+# Maven related (and some plugins)
+target/
+*.ser
+*.ec
+
+# Intellij
+*.ipr
+*.iml
+*.iws
+.idea/
