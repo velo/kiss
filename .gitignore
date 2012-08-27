@@ -13,3 +13,6 @@ target/
 *.iml
 *.iws
 .idea/
+
+# testNG
+test-output/
