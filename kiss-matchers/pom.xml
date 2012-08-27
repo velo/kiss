@@ -41,6 +41,14 @@
       <version>[0,)</version>
       <scope>provided</scope>
     </dependency>
+
+    <!-- http related matchers -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>[0,)</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
 </project>
