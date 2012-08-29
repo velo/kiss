@@ -7,7 +7,27 @@
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
+  <name>kiss</name>
   <description>Useful libraries with little to no footprint</description>
+
+  <url>https://github.com/velo/kiss</url>
+
+  <licenses>
+    <license>
+      <name>LGPL</name>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>velo</id>
+      <name>Marvin Froeder</name>
+      <email>marvin at marvinformatics dot com</email>
+      <roles>
+        <role>creator</role>
+      </roles>
+    </developer>
+  </developers>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -319,6 +339,23 @@
       </plugin>
     </plugins>
   </build>
+
+  <distributionManagement>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+    </repository>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <scm>
+    <url>https://github.com/velo/kiss</url>
+    <connection>scm:git:git://github.com/velo/kiss.git</connection>
+    <developerConnection>scm:git:https://github.com/velo/kiss.git</developerConnection>
+  </scm>
 
 </project>
 
