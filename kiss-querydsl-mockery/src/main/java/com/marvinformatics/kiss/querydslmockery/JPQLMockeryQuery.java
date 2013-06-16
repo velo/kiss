@@ -28,7 +28,10 @@ import com.mysema.query.types.Predicate;
 import com.mysema.query.types.QTuple;
 
 /**
+ * <p>JPQLMockeryQuery class.</p>
+ *
  * @author Marvin
+ * @since 0.8
  */
 public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 
@@ -36,6 +39,9 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 
 	private final QueryEngine queryEngine;
 
+	/**
+	 * <p>Constructor for JPQLMockeryQuery.</p>
+	 */
 	public JPQLMockeryQuery() {
 		this(new CollQueryMixin<JPQLMockeryQuery>(new DefaultQueryMetadata()),
 				new DefaultQueryEngine(new DefaultEvaluatorFactory(
@@ -49,12 +55,18 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 		this.queryMixin.setSelf(this);
 	}
 
+	/**
+	 * <p>Constructor for JPQLMockeryQuery.</p>
+	 */
 	public JPQLMockeryQuery(CollQueryMixin<JPQLMockeryQuery> queryMixin,
 			QueryEngine queryEngine) {
 		super(queryMixin);
 		this.queryEngine = queryEngine;
 	}
 
+	/**
+	 * <p>bind</p>
+	 */
 	public <A> JPQLMockeryQuery bind(Path<A> entity, Iterable<? extends A> col) {
 		iterables.put(entity, col);
 		queryMixin.getMetadata().addJoin(JoinType.DEFAULT, entity);
@@ -72,6 +84,7 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 		OPERATOR_SYMBOLS.clear();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long count() {
 		try {
@@ -81,6 +94,7 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean exists() {
 		try {
@@ -90,53 +104,62 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public JPQLQuery fetch() {
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public JPQLQuery from(EntityPath<?>... sources) {
 		// seem to be the most reasonable thing to do
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <P> JPQLQuery join(CollectionExpression<?, P> target) {
 		queryMixin.innerJoin(target);
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <P> JPQLQuery join(CollectionExpression<?, P> target, Path<P> alias) {
 		queryMixin.innerJoin(target, alias);
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <P> JPQLQuery join(EntityPath<P> target) {
 		queryMixin.innerJoin(target);
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <P> JPQLQuery join(EntityPath<P> target, Path<P> alias) {
 		queryMixin.innerJoin(target, alias);
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <P> JPQLQuery join(MapExpression<?, P> target) {
 		queryMixin.innerJoin(target);
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <P> JPQLQuery join(MapExpression<?, P> target, Path<P> alias) {
 		queryMixin.innerJoin(target, alias);
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <RT> List<RT> list(Expression<RT> projection) {
 		try {
@@ -149,6 +172,7 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean notExists() {
 		return !exists();
@@ -158,21 +182,25 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 		queryMixin.getMetadata().reset();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Tuple singleResult(Expression<?>... args) {
 		return limit(1).uniqueResult(args);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <RT> RT singleResult(Expression<RT> projection) {
 		return limit(1).uniqueResult(projection);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Tuple uniqueResult(Expression<?>... args) {
 		return uniqueResult(new QTuple(args));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <RT> RT uniqueResult(Expression<RT> projection) {
 		try {
@@ -190,6 +218,7 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public JPQLMockeryQuery where(Predicate... o) {
 		return super.where(o);

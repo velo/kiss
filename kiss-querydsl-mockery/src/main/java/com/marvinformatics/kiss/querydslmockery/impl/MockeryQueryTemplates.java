@@ -4,10 +4,14 @@ import com.mysema.query.collections.CollQueryTemplates;
 import com.mysema.query.types.Ops;
 
 /**
+ * <p>MockeryQueryTemplates class.</p>
+ *
  * @author Marvin
+ * @since 0.8
  */
 public class MockeryQueryTemplates extends CollQueryTemplates {
 
+	/** Constant <code>DEFAULT</code> */
 	public static final MockeryQueryTemplates DEFAULT = new MockeryQueryTemplates();
 
 	protected MockeryQueryTemplates() {
