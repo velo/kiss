@@ -6,12 +6,21 @@ import java.nio.file.Path;
 
 import org.hamcrest.Description;
 
+/**
+ * <p>ExistsMatcher class.</p>
+ *
+ * @author Marvin
+ * @since 0.7
+ */
 public class ExistsMatcher
     extends AbstractPathMatcher
 {
 
     private LinkOption[] options;
 
+    /**
+     * <p>Constructor for ExistsMatcher.</p>
+     */
     public ExistsMatcher( LinkOption... options )
     {
         super();
@@ -24,6 +33,7 @@ public class ExistsMatcher
         return Files.exists( item, options );
     }
 
+    /** {@inheritDoc} */
     public void describeTo( Description description )
     {
         description.appendText( "to exists" );

@@ -6,12 +6,21 @@ import java.nio.file.Path;
 
 import org.hamcrest.Description;
 
+/**
+ * <p>IsRegularFileMatcher class.</p>
+ *
+ * @author Marvin
+ * @since 0.7
+ */
 public class IsRegularFileMatcher
     extends AbstractPathMatcher
 {
 
     private LinkOption[] options;
 
+    /**
+     * <p>Constructor for IsRegularFileMatcher.</p>
+     */
     public IsRegularFileMatcher( LinkOption... options )
     {
         super();
@@ -24,6 +33,7 @@ public class IsRegularFileMatcher
         return Files.isRegularFile( item, options );
     }
 
+    /** {@inheritDoc} */
     public void describeTo( Description description )
     {
         description.appendText( "to be a regular file" );

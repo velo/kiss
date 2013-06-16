@@ -9,6 +9,12 @@ import org.hamcrest.Matcher;
 
 import com.marvinformatics.kissthrow.Throws;
 
+/**
+ * <p>WithSizeMatcher class.</p>
+ *
+ * @author Marvin
+ * @since 0.7
+ */
 public class WithSizeMatcher
     extends AbstractPathMatcher
 {
@@ -16,11 +22,15 @@ public class WithSizeMatcher
 
     private long length;
 
+    /**
+     * <p>Constructor for WithSizeMatcher.</p>
+     */
     public WithSizeMatcher( Matcher<Long> size )
     {
         this.size = size;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean matchesSafely( Path item )
     {
@@ -35,6 +45,7 @@ public class WithSizeMatcher
         }
     }
 
+    /** {@inheritDoc} */
     public void describeTo( Description description )
     {
         description.appendText( " file to have dize " );

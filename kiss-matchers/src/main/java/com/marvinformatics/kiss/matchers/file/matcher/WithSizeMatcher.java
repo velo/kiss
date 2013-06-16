@@ -5,6 +5,12 @@ import java.io.File;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
+/**
+ * <p>WithSizeMatcher class.</p>
+ *
+ * @author Marvin
+ * @since 0.7
+ */
 public class WithSizeMatcher
     extends AbstractFileMatcher
 {
@@ -12,11 +18,15 @@ public class WithSizeMatcher
 
     long length;
 
+    /**
+     * <p>Constructor for WithSizeMatcher.</p>
+     */
     public WithSizeMatcher( Matcher<Long> size )
     {
         this.size = size;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean matchesSafely( File item )
     {
@@ -25,6 +35,7 @@ public class WithSizeMatcher
         return size.matches( length );
     }
 
+    /** {@inheritDoc} */
     public void describeTo( Description description )
     {
         description.appendText( " that file " );

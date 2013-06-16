@@ -5,6 +5,12 @@ import java.nio.file.Path;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
+/**
+ * <p>WithNameMatcher class.</p>
+ *
+ * @author Marvin
+ * @since 0.7
+ */
 public class WithNameMatcher
     extends AbstractPathMatcher
 {
@@ -12,11 +18,15 @@ public class WithNameMatcher
 
     private String realName;
 
+    /**
+     * <p>Constructor for WithNameMatcher.</p>
+     */
     public WithNameMatcher( Matcher<String> name )
     {
         this.name = name;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean matchesSafely( Path item )
     {
@@ -24,6 +34,7 @@ public class WithNameMatcher
         return name.matches( realName );
     }
 
+    /** {@inheritDoc} */
     public void describeTo( Description description )
     {
         description.appendText( "with name path '" );

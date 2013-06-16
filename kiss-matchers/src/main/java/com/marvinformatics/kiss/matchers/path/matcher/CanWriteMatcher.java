@@ -5,6 +5,12 @@ import java.nio.file.Path;
 
 import org.hamcrest.Description;
 
+/**
+ * <p>CanWriteMatcher class.</p>
+ *
+ * @author Marvin
+ * @since 0.7
+ */
 public class CanWriteMatcher
     extends AbstractPathMatcher
 {
@@ -15,6 +21,7 @@ public class CanWriteMatcher
         return Files.isWritable( item );
     }
 
+    /** {@inheritDoc} */
     public void describeTo( Description description )
     {
         description.appendText( "writable path" );

@@ -8,6 +8,12 @@ import org.hamcrest.TypeSafeMatcher;
 
 import com.marvinformatics.kissthrow.Throws;
 
+/**
+ * <p>AbstractArtifactMatcher class.</p>
+ *
+ * @author Marvin
+ * @since 0.7
+ */
 public class AbstractArtifactMatcher<E>
     extends TypeSafeMatcher<E>
 {
@@ -15,12 +21,16 @@ public class AbstractArtifactMatcher<E>
 
     private Matcher<? extends String> elementMatcher;
 
+    /**
+     * <p>Constructor for AbstractArtifactMatcher.</p>
+     */
     public AbstractArtifactMatcher( Matcher<? extends String> elementMatcher, String element )
     {
         this.elementMatcher = elementMatcher;
         this.element = element;
     }
 
+    /** {@inheritDoc} */
     public void describeTo( Description description )
     {
         description.appendText( "a artifact with " + element + " " ).appendDescriptionOf( elementMatcher );
@@ -51,6 +61,7 @@ public class AbstractArtifactMatcher<E>
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean matchesSafely( E item )
     {

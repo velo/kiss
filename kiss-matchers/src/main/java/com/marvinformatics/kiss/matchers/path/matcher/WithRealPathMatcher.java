@@ -9,6 +9,12 @@ import org.hamcrest.Matcher;
 
 import com.marvinformatics.kissthrow.Throws;
 
+/**
+ * <p>WithRealPathMatcher class.</p>
+ *
+ * @author Marvin
+ * @since 0.7
+ */
 public class WithRealPathMatcher
     extends AbstractPathMatcher
 {
@@ -18,12 +24,16 @@ public class WithRealPathMatcher
 
     private String realPath;
 
+    /**
+     * <p>Constructor for WithRealPathMatcher.</p>
+     */
     public WithRealPathMatcher( Matcher<String> path, LinkOption... options )
     {
         this.path = path;
         this.options = options;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean matchesSafely( Path item )
     {
@@ -38,6 +48,7 @@ public class WithRealPathMatcher
         }
     }
 
+    /** {@inheritDoc} */
     public void describeTo( Description description )
     {
         description.appendText( "with real path '" );

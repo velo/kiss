@@ -5,6 +5,12 @@ import java.nio.file.Path;
 
 import org.hamcrest.Description;
 
+/**
+ * <p>CanReadMatcher class.</p>
+ *
+ * @author Marvin
+ * @since 0.7
+ */
 public class CanReadMatcher
     extends AbstractPathMatcher
 {
@@ -15,6 +21,7 @@ public class CanReadMatcher
         return Files.isReadable( item );
     }
 
+    /** {@inheritDoc} */
     public void describeTo( Description description )
     {
         description.appendText( "readable path" );

@@ -5,6 +5,12 @@ import java.nio.file.Path;
 
 import org.hamcrest.Description;
 
+/**
+ * <p>IsExecutableMatcher class.</p>
+ *
+ * @author Marvin
+ * @since 0.7
+ */
 public class IsExecutableMatcher
     extends AbstractPathMatcher
 {
@@ -15,6 +21,7 @@ public class IsExecutableMatcher
         return Files.isExecutable( item );
     }
 
+    /** {@inheritDoc} */
     public void describeTo( Description description )
     {
         description.appendText( "executable path" );

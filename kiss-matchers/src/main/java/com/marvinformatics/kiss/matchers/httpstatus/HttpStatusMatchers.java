@@ -7,6 +7,12 @@ import static org.hamcrest.Matchers.lessThan;
 
 import org.hamcrest.Matcher;
 
+/**
+ * <p>HttpStatusMatchers class.</p>
+ *
+ * @author Marvin
+ * @since 0.7
+ */
 public final class HttpStatusMatchers
 {
 
@@ -32,7 +38,6 @@ public final class HttpStatusMatchers
     /**
      * Status code (101) indicating the server is switching protocols according to Upgrade header.
      */
-
     public static Matcher<? super Integer> switchingProtocols()
     {
         return equalTo( 101 );

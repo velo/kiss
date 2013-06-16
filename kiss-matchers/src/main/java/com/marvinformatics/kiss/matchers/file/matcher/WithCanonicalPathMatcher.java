@@ -8,16 +8,26 @@ import org.hamcrest.Matcher;
 
 import com.marvinformatics.kissthrow.Throws;
 
+/**
+ * <p>WithCanonicalPathMatcher class.</p>
+ *
+ * @author Marvin
+ * @since 0.7
+ */
 public class WithCanonicalPathMatcher
     extends AbstractFileMatcher
 {
     private final Matcher<String> path;
 
+    /**
+     * <p>Constructor for WithCanonicalPathMatcher.</p>
+     */
     public WithCanonicalPathMatcher( Matcher<String> path )
     {
         this.path = path;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean matchesSafely( File item )
     {
@@ -31,6 +41,7 @@ public class WithCanonicalPathMatcher
         }
     }
 
+    /** {@inheritDoc} */
     public void describeTo( Description description )
     {
         description.appendText( "with canonical path '" );

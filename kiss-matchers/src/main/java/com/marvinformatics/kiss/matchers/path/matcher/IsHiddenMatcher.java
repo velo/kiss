@@ -8,6 +8,12 @@ import org.hamcrest.Description;
 
 import com.marvinformatics.kissthrow.Throws;
 
+/**
+ * <p>IsHiddenMatcher class.</p>
+ *
+ * @author Marvin
+ * @since 0.7
+ */
 public class IsHiddenMatcher
     extends AbstractPathMatcher
 {
@@ -25,6 +31,7 @@ public class IsHiddenMatcher
         }
     }
 
+    /** {@inheritDoc} */
     public void describeTo( Description description )
     {
         description.appendText( "hidden path" );
