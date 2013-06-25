@@ -20,6 +20,9 @@ public class MockeryQueryTemplates extends CollQueryTemplates {
 		String functions = MockeryQueryFunctions.class.getName();
 		add(Ops.EQ, functions + ".equals({0}, {1})");
 		add(Ops.NE, "!" + functions + ".equals({0}, {1})");
+        add(Ops.LOWER, functions + ".toLowerCase({0})");
+        add(Ops.LIKE, functions + ".like({0},{1})");
+        add(Ops.IN, functions + ".in({1},{0})");
 	}
 
 }
