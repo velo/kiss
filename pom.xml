@@ -10,7 +10,7 @@
 
   <groupId>com.marvinformatics</groupId>
   <artifactId>kiss</artifactId>
-  <version>0.9-SNAPSHOT</version>
+  <version>0.9</version>
   <packaging>pom</packaging>
 
   <name>kiss</name>

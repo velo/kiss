@@ -8,7 +8,7 @@ import com.mysema.query.collections.CollQueryFunctions;
  * <p>
  * MockeryQueryFunctions class.
  * </p>
- * 
+ *
  * @author Marvin
  * @since 0.8
  */
@@ -18,7 +18,7 @@ public class MockeryQueryFunctions {
 	 * <p>
 	 * equals
 	 * </p>
-	 * 
+	 *
 	 * @since 0.8
 	 */
 	public static boolean equals(Object o1, Object o2) {
@@ -34,6 +34,9 @@ public class MockeryQueryFunctions {
 		return o1.equals(o2);
 	}
 
+	/**
+	 * <p>toLowerCase</p>
+	 */
 	public static String toLowerCase(String text) {
 		if (text == null)
 			return null;
@@ -41,6 +44,9 @@ public class MockeryQueryFunctions {
 		return text.toLowerCase();
 	}
 
+	/**
+	 * <p>like</p>
+	 */
 	public static boolean like(final String str, String like) {
 		if (str == null)
 			return false;
@@ -48,10 +54,16 @@ public class MockeryQueryFunctions {
 		return CollQueryFunctions.like(str, like);
 	}
 
+	/**
+	 * <p>like</p>
+	 */
 	public static boolean like(String str, String like, char escape) {
 		return like(str, like);
 	}
 
+	/**
+	 * <p>in</p>
+	 */
 	public static <E> boolean in(Collection<E> col, E filter) {
 		if (col.isEmpty() && filter == null)
 			return true;
