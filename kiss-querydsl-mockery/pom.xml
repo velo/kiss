@@ -24,11 +24,6 @@
       <artifactId>querydsl-jpa</artifactId>
       <version>${querydsl.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.aspectj</groupId>
-      <artifactId>aspectjrt</artifactId>
-      <version>1.7.2</version>
-    </dependency>
 
     <dependency>
       <groupId>com.h2database</groupId>
