@@ -40,7 +40,6 @@
   </properties>
 
   <modules>
-    <module>kiss-matchers</module>
     <module>kiss-throws</module>
     <module>kiss-querydsl-mockery</module>
   </modules>
@@ -351,6 +350,15 @@
       <build>
         <directory>target-m2e</directory>
       </build>
+    </profile>
+
+    <profile>
+      <activation>
+        <jdk>7</jdk>
+      </activation>
+      <modules>
+        <module>kiss-matchers</module>
+      </modules>
     </profile>
   </profiles>
 
