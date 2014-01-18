@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Person {
@@ -23,6 +24,9 @@ public class Person {
 
 	@ManyToMany
 	private List<Person> child;
+
+	@OneToOne
+	private Address address;
 
 	public Person() {
 		super();
@@ -47,6 +51,14 @@ public class Person {
 		this.name = name;
 		this.age = age;
 		this.child = child;
+	}
+
+	public Person(String id, String name, Address address, Person... child) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.address = address;
+		this.child = Arrays.asList(child);
 	}
 
 	public String getId() {

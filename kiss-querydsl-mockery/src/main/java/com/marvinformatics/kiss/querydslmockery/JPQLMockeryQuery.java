@@ -1,6 +1,7 @@
 package com.marvinformatics.kiss.querydslmockery;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,14 +23,18 @@ import com.mysema.query.types.CollectionExpression;
 import com.mysema.query.types.EntityPath;
 import com.mysema.query.types.Expression;
 import com.mysema.query.types.MapExpression;
+import com.mysema.query.types.OperationImpl;
 import com.mysema.query.types.Operator;
+import com.mysema.query.types.Ops;
 import com.mysema.query.types.Path;
 import com.mysema.query.types.Predicate;
 import com.mysema.query.types.QTuple;
 
 /**
- * <p>JPQLMockeryQuery class.</p>
- *
+ * <p>
+ * JPQLMockeryQuery class.
+ * </p>
+ * 
  * @author Marvin
  * @since 0.8
  */
@@ -40,7 +45,9 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 	private final QueryEngine queryEngine;
 
 	/**
-	 * <p>Constructor for JPQLMockeryQuery.</p>
+	 * <p>
+	 * Constructor for JPQLMockeryQuery.
+	 * </p>
 	 */
 	public JPQLMockeryQuery() {
 		this(new CollQueryMixin<JPQLMockeryQuery>(new DefaultQueryMetadata()),
@@ -56,7 +63,9 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 	}
 
 	/**
-	 * <p>Constructor for JPQLMockeryQuery.</p>
+	 * <p>
+	 * Constructor for JPQLMockeryQuery.
+	 * </p>
 	 */
 	public JPQLMockeryQuery(CollQueryMixin<JPQLMockeryQuery> queryMixin,
 			QueryEngine queryEngine) {
@@ -65,7 +74,9 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 	}
 
 	/**
-	 * <p>bind</p>
+	 * <p>
+	 * bind
+	 * </p>
 	 */
 	public <A> JPQLMockeryQuery bind(Path<A> entity, Iterable<? extends A> col) {
 		iterables.put(entity, col);
@@ -163,7 +174,6 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 	@Override
 	public <RT> List<RT> list(Expression<RT> projection) {
 		try {
-			projection = queryMixin.convert(projection);
 			queryMixin.addProjection(projection);
 			return queryEngine.list(queryMixin.getMetadata(), iterables,
 					projection);
@@ -224,4 +234,43 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 		return super.where(o);
 	}
 
+	@Override
+	public <P> JPQLQuery leftJoin(EntityPath<P> target, Path<P> alias) {
+        queryMixin.getMetadata().addJoin(JoinType.LEFTJOIN, createAlias(target, alias));
+		return queryMixin.leftJoin(target, alias);
+	}
+
+    private <P> Expression<P> createAlias(EntityPath<P> target, Path<P> alias) {
+        return OperationImpl.create(alias.getType(), Ops.ALIAS, target, alias);
+    }
+
+    private <D> Expression<D> createAlias(MapExpression<?,D> target, Path<D> alias) {
+        return OperationImpl.create(alias.getType(), Ops.ALIAS, target, alias);
+    }
+
+	@Override
+	public <P> JPQLQuery leftJoin(CollectionExpression<?, P> target) {
+		return queryMixin.leftJoin(target);
+	}
+
+	@Override
+	public <P> JPQLQuery leftJoin(CollectionExpression<?, P> target,
+			Path<P> alias) {
+		return queryMixin.leftJoin(target, alias);
+	}
+
+	@Override
+	public <P> JPQLQuery leftJoin(EntityPath<P> target) {
+		return queryMixin.leftJoin(target);
+	}
+
+	@Override
+	public <P> JPQLQuery leftJoin(MapExpression<?, P> target) {
+		return queryMixin.leftJoin(target);
+	}
+
+	@Override
+	public <P> JPQLQuery leftJoin(MapExpression<?, P> target, Path<P> alias) {
+		return queryMixin.leftJoin(target, alias);
+	}
 }

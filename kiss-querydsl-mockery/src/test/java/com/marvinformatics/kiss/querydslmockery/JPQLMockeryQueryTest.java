@@ -17,9 +17,14 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
+import com.marvinformatics.kiss.querydslmockery.entity.Address;
+import com.marvinformatics.kiss.querydslmockery.entity.PeopleLocation;
 import com.marvinformatics.kiss.querydslmockery.entity.Person;
+import com.marvinformatics.kiss.querydslmockery.entity.QAddress;
+import com.marvinformatics.kiss.querydslmockery.entity.QPeopleLocation;
 import com.marvinformatics.kiss.querydslmockery.entity.QPerson;
 import com.mysema.query.Tuple;
+import com.mysema.query.jpa.JPASubQuery;
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
 
@@ -28,12 +33,16 @@ public class JPQLMockeryQueryTest {
 	private static EntityManager em;
 
 	private static EntityManagerFactory factory;
+
+	private static final Address a1 = new Address("42", "10 5th avenue", "city");
 	private static final Person p1 = new Person("1234", "Juka");
-	private static final Person p2 = new Person("2345", "Marko", p1);
+	private static final Person p2 = new Person("2345", "Marko", a1, p1);
 	private static final Person p3 = new Person("3456", "Pedro", p1);
 
 	private static final Person p4 = new Person("4567", "Barca", p2, p3);
 	private static List<Person> people;
+
+	private static ArrayList<Address> addresses;
 
 	@BeforeSuite
 	public static void checkClasses() {
@@ -47,6 +56,7 @@ public class JPQLMockeryQueryTest {
 		em = factory.createEntityManager();
 		EntityTransaction t = em.getTransaction();
 		t.begin();
+		em.persist(a1);
 		em.persist(p1);
 		em.persist(p2);
 		em.persist(p3);
@@ -54,6 +64,7 @@ public class JPQLMockeryQueryTest {
 		t.commit();
 
 		people = new ArrayList<Person>(Arrays.asList(p1, p2, p3, p4));
+		addresses = new ArrayList<Address>(Arrays.asList(a1));
 	}
 
 	@AfterClass
@@ -64,6 +75,7 @@ public class JPQLMockeryQueryTest {
 	}
 
 	QPerson p = QPerson.person;
+	QAddress a = QAddress.address;
 
 	@Test
 	public void count() {
@@ -87,6 +99,7 @@ public class JPQLMockeryQueryTest {
 
 		JPQLMockeryQuery mockedQuery = new JPQLMockeryQuery();
 		mockedQuery.bind(p, people);
+		mockedQuery.bind(a, addresses);
 		E mockedQueryResult = mockeryParameters.runQuery(mockedQuery);
 		mockeryParameters.matchResult(mockedQueryResult);
 
@@ -274,4 +287,52 @@ public class JPQLMockeryQueryTest {
 			}
 		});
 	}
+//
+//	@Test
+//	public void leftJoin() {
+//		execute(new MockeryParameters<List<PeopleLocation>>() {
+//			@Override
+//			public List<PeopleLocation> runQuery(JPQLQuery query) {
+//				return query.from(p).leftJoin(p.address, a).orderBy(p.id.asc())
+//						.list(new QPeopleLocation(p.name, a.city));
+//			}
+//
+//			@Override
+//			public void matchResult(List<PeopleLocation> result) {
+//				MatcherAssert.assertThat(result, Matchers.hasSize(4));
+//				MatcherAssert.assertThat(result.get(0).getCity(),
+//						Matchers.nullValue());
+//				MatcherAssert.assertThat(result.get(1).getCity(),
+//						Matchers.notNullValue());
+//				MatcherAssert.assertThat(result.get(2).getCity(),
+//						Matchers.nullValue());
+//				MatcherAssert.assertThat(result.get(3).getCity(),
+//						Matchers.nullValue());
+//			}
+//		});
+//	}
+//	
+//	@Test
+//	public void subquery() {
+//		execute(new MockeryParameters<List<String>>() {
+//			@Override
+//			public List<String> runQuery(JPQLQuery query) {
+//				return query.from(p)
+//						.list(new JPASubQuery().from(a).unique(a.id));
+//			}
+//			
+//			@Override
+//			public void matchResult(List<String> result) {
+//				MatcherAssert.assertThat(result, Matchers.hasSize(4));
+//				MatcherAssert.assertThat(result.get(0),
+//						Matchers.equalTo("42"));
+//				MatcherAssert.assertThat(result.get(1),
+//						Matchers.equalTo("42"));
+//				MatcherAssert.assertThat(result.get(2),
+//						Matchers.equalTo("42"));
+//				MatcherAssert.assertThat(result.get(3),
+//						Matchers.equalTo("42"));
+//			}
+//		});
+//	}
 }
