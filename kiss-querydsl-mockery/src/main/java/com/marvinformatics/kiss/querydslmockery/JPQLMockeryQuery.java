@@ -34,7 +34,7 @@ import com.mysema.query.types.QTuple;
  * <p>
  * JPQLMockeryQuery class.
  * </p>
- * 
+ *
  * @author Marvin
  * @since 0.8
  */
@@ -234,6 +234,7 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 		return super.where(o);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <P> JPQLQuery leftJoin(EntityPath<P> target, Path<P> alias) {
         queryMixin.getMetadata().addJoin(JoinType.LEFTJOIN, createAlias(target, alias));
@@ -248,27 +249,32 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
         return OperationImpl.create(alias.getType(), Ops.ALIAS, target, alias);
     }
 
+	/** {@inheritDoc} */
 	@Override
 	public <P> JPQLQuery leftJoin(CollectionExpression<?, P> target) {
 		return queryMixin.leftJoin(target);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <P> JPQLQuery leftJoin(CollectionExpression<?, P> target,
 			Path<P> alias) {
 		return queryMixin.leftJoin(target, alias);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <P> JPQLQuery leftJoin(EntityPath<P> target) {
 		return queryMixin.leftJoin(target);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <P> JPQLQuery leftJoin(MapExpression<?, P> target) {
 		return queryMixin.leftJoin(target);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <P> JPQLQuery leftJoin(MapExpression<?, P> target, Path<P> alias) {
 		return queryMixin.leftJoin(target, alias);
