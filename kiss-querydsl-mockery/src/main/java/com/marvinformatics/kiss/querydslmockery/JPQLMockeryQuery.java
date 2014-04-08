@@ -32,7 +32,7 @@ import com.mysema.query.types.QTuple;
  * <p>
  * JPQLMockeryQuery class.
  * </p>
- * 
+ *
  * @author Marvin
  * @since 0.8
  */

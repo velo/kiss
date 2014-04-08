@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.marvinformatics</groupId>
     <artifactId>kiss</artifactId>
-    <version>0.12-SNAPSHOT</version>
+    <version>0.12</version>
   </parent>
 
   <artifactId>kiss-querydsl-mockery</artifactId>
@@ -36,6 +36,7 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
       <version>4.1.7.Final</version>
+      <scope>test</scope>
       <exclusions>
         <exclusion>
           <groupId>cglib</groupId>
@@ -46,7 +47,6 @@
           <artifactId>asm</artifactId>
         </exclusion>
       </exclusions>
-      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -56,6 +56,12 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
+      <version>1.0.0.Final</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>
