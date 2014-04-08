@@ -32,7 +32,7 @@ import com.mysema.query.types.QTuple;
  * <p>
  * JPQLMockeryQuery class.
  * </p>
- *
+ * 
  * @author Marvin
  * @since 0.8
  */
@@ -167,7 +167,7 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 	@Override
 	public <RT> List<RT> list(Expression<RT> projection) {
 		try {
-			projection = queryMixin.convert(projection);
+			projection = queryMixin.convert(projection, true);
 			queryMixin.addProjection(projection);
 			return queryEngine.list(queryMixin.getMetadata(), iterables,
 					projection);
@@ -232,7 +232,7 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 	@Override
 	public <RT> SearchResults<RT> listResults(Expression<RT> projection) {
 		try {
-			projection = queryMixin.convert(projection);
+			projection = queryMixin.convert(projection, true);
 			queryMixin.addProjection(projection);
 			List<RT> result = queryEngine.list(queryMixin.getMetadata(),
 					iterables, projection);

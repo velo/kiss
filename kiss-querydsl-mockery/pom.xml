@@ -10,7 +10,7 @@
   <artifactId>kiss-querydsl-mockery</artifactId>
 
   <properties>
-    <querydsl.version>3.2.0</querydsl.version>
+    <querydsl.version>3.3.2</querydsl.version>
   </properties>
 
   <dependencies>
