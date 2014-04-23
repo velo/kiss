@@ -7,7 +7,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.NonUniqueResultException;
 import javax.persistence.Persistence;
 
 import org.hamcrest.MatcherAssert;
@@ -21,6 +20,7 @@ import com.marvinformatics.kiss.querydslmockery.entity.Address;
 import com.marvinformatics.kiss.querydslmockery.entity.Person;
 import com.marvinformatics.kiss.querydslmockery.entity.QAddress;
 import com.marvinformatics.kiss.querydslmockery.entity.QPerson;
+import com.mysema.query.NonUniqueResultException;
 import com.mysema.query.SearchResults;
 import com.mysema.query.Tuple;
 import com.mysema.query.jpa.JPQLQuery;

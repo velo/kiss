@@ -5,12 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.NonUniqueResultException;
-
 import com.marvinformatics.kiss.querydslmockery.impl.AbstractQueryBase;
 import com.marvinformatics.kiss.querydslmockery.impl.MockeryQueryTemplates;
 import com.mysema.query.DefaultQueryMetadata;
 import com.mysema.query.JoinType;
+import com.mysema.query.NonUniqueResultException;
 import com.mysema.query.SearchResults;
 import com.mysema.query.Tuple;
 import com.mysema.query.collections.CollQueryMixin;
