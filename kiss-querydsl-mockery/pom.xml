@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.marvinformatics</groupId>
     <artifactId>kiss</artifactId>
-    <version>0.13-SNAPSHOT</version>
+    <version>0.13</version>
   </parent>
 
   <artifactId>kiss-querydsl-mockery</artifactId>
