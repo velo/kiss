@@ -8,7 +8,7 @@ import com.mysema.query.collections.CollQueryFunctions;
  * <p>
  * MockeryQueryFunctions class.
  * </p>
- *
+ * 
  * @author Marvin
  * @since 0.8
  */
@@ -18,7 +18,7 @@ public class MockeryQueryFunctions {
 	 * <p>
 	 * equals
 	 * </p>
-	 *
+	 * 
 	 * @since 0.8
 	 */
 	public static boolean equals(Object o1, Object o2) {
@@ -31,11 +31,13 @@ public class MockeryQueryFunctions {
 		if (o2 == null)
 			return false;
 
-		return o1.equals(o2);
+		return o1.equals( o2 );
 	}
 
 	/**
-	 * <p>toLowerCase</p>
+	 * <p>
+	 * toLowerCase
+	 * </p>
 	 */
 	public static String toLowerCase(String text) {
 		if (text == null)
@@ -45,30 +47,38 @@ public class MockeryQueryFunctions {
 	}
 
 	/**
-	 * <p>like</p>
+	 * <p>
+	 * like
+	 * </p>
 	 */
 	public static boolean like(final String str, String like) {
 		if (str == null)
 			return false;
 
-		return CollQueryFunctions.like(str, like);
+		return CollQueryFunctions.like( str, like );
 	}
 
 	/**
-	 * <p>like</p>
+	 * <p>
+	 * like
+	 * </p>
 	 */
 	public static boolean like(String str, String like, char escape) {
-		return like(str, like);
+		return like( str, like );
 	}
 
 	/**
-	 * <p>in</p>
+	 * <p>
+	 * in
+	 * </p>
 	 */
 	public static <E> boolean in(Collection<E> col, E filter) {
-		if (col.isEmpty() && filter == null)
+		if (col.isEmpty())
+			throw new IllegalArgumentException( "IN [empty list doesnt work] " );
+		if (filter == null)
 			return true;
 
-		return col.contains(filter);
+		return col.contains( filter );
 	}
 
 }
