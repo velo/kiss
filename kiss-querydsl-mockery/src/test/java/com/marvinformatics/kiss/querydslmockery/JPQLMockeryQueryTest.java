@@ -11,6 +11,7 @@ import javax.persistence.Persistence;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hibernate.hql.internal.ast.QuerySyntaxException;
 import org.junit.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeSuite;
@@ -42,8 +43,6 @@ public class JPQLMockeryQueryTest {
 
 	private static ArrayList<Address> addresses;
 
-	private static SearchResults<Person> paginatedPeople;
-
 	@BeforeSuite
 	public static void checkClasses() {
 		Person.class.getClass();
@@ -65,7 +64,6 @@ public class JPQLMockeryQueryTest {
 
 		people = new ArrayList<Person>( Arrays.asList( p1, p2, p3, p4 ) );
 		addresses = new ArrayList<Address>( Arrays.asList( a1 ) );
-		paginatedPeople = new SearchResults<Person>( people, 3L, 2L, 4L );
 	}
 
 	@AfterClass
@@ -320,6 +318,22 @@ public class JPQLMockeryQueryTest {
 			}
 		} );
 	}
+
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void inEmptyListShouldFail() throws Exception {
+		execute( new Mockery<List<Person>>() {
+
+			@Override
+			public List<Person> runQuery(JPQLQuery query) {
+				return query.from( p ).where( p.id.in( new ArrayList<String>() ) ).list( p );
+			}
+
+			@Override
+			public void matchResult(List<Person> result) {
+			}
+		} );
+	}
+
 	//
 	// @Test
 	// public void leftJoin() {
