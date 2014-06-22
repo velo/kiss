@@ -12,13 +12,14 @@ import javax.persistence.Persistence;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.marvinformatics.kiss.querydslmockery.entity.Address;
+import com.marvinformatics.kiss.querydslmockery.entity.PeopleLocation;
 import com.marvinformatics.kiss.querydslmockery.entity.Person;
 import com.marvinformatics.kiss.querydslmockery.entity.QAddress;
+import com.marvinformatics.kiss.querydslmockery.entity.QPeopleLocation;
 import com.marvinformatics.kiss.querydslmockery.entity.QPerson;
 import com.mysema.query.NonUniqueResultException;
 import com.mysema.query.SearchResults;
@@ -159,6 +160,24 @@ public class JPQLMockeryQueryTest {
 			public List<Person> runQuery(JPQLQuery query) {
 				return query.from(p).join(p.child, c).where(c.name.eq("Juka"))
 						.list(p);
+			}
+
+			@Override
+			public void matchResult(List<Person> result) {
+				MatcherAssert.assertThat(result, Matchers.hasSize(2));
+			}
+		});
+	}
+
+	@Test
+	public void innerJoin() {
+		execute(new Mockery<List<Person>>() {
+			QPerson c = new QPerson("child");
+
+			@Override
+			public List<Person> runQuery(JPQLQuery query) {
+				return query.from(p).innerJoin(p.child, c)
+						.where(c.name.eq("Juka")).list(p);
 			}
 
 			@Override
@@ -337,10 +356,9 @@ public class JPQLMockeryQueryTest {
 		});
 	}
 
-	//
 	// @Test
 	// public void leftJoin() {
-	// execute(new MockeryParameters<List<PeopleLocation>>() {
+	// execute(new Mockery<List<PeopleLocation>>() {
 	// @Override
 	// public List<PeopleLocation> runQuery(JPQLQuery query) {
 	// return query.from(p).leftJoin(p.address, a).orderBy(p.id.asc())

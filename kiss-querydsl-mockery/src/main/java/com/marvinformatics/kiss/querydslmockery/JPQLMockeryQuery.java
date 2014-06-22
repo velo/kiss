@@ -162,6 +162,37 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 		return this;
 	}
 
+	@Override
+	public <P> JPQLQuery innerJoin(CollectionExpression<?, P> target) {
+		return join(target);
+	}
+
+	@Override
+	public <P> JPQLQuery innerJoin(CollectionExpression<?, P> target,
+			Path<P> alias) {
+		return join(target, alias);
+	}
+
+	@Override
+	public <P> JPQLQuery innerJoin(EntityPath<P> target) {
+		return join(target);
+	}
+
+	@Override
+	public <P> JPQLQuery innerJoin(EntityPath<P> target, Path<P> alias) {
+		return join(target, alias);
+	}
+
+	@Override
+	public <P> JPQLQuery innerJoin(MapExpression<?, P> target) {
+		return join(target);
+	}
+
+	@Override
+	public <P> JPQLQuery innerJoin(MapExpression<?, P> target, Path<P> alias) {
+		return join(target, alias);
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public <RT> List<RT> list(Expression<RT> projection) {
