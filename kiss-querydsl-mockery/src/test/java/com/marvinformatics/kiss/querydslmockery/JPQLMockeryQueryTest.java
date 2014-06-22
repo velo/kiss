@@ -3,8 +3,8 @@ package com.marvinformatics.kiss.querydslmockery;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,8 +15,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -90,7 +88,7 @@ public class JPQLMockeryQueryTest {
 
 			@Override
 			public void matchResult(Long result) {
-				MatcherAssert.assertThat(result, Matchers.equalTo(1L));
+				assertThat(result, equalTo(1L));
 			}
 		});
 	}
@@ -106,8 +104,7 @@ public class JPQLMockeryQueryTest {
 		E mockedQueryResult = mockeryParameters.runQuery(mockedQuery);
 		mockeryParameters.matchResult(mockedQueryResult);
 
-		MatcherAssert.assertThat(regularQueryResult,
-				Matchers.equalTo(mockedQueryResult));
+		assertThat(regularQueryResult, equalTo(mockedQueryResult));
 	}
 
 	private <E> void execute(MockerySearchResults<E> mockery) {
@@ -121,8 +118,8 @@ public class JPQLMockeryQueryTest {
 		SearchResults<E> mockedQueryResult = mockery.runQuery(mockedQuery);
 		mockery.matchResult(mockedQueryResult);
 
-		MatcherAssert.assertThat(regularQueryResult.getResults(),
-				Matchers.equalTo(mockedQueryResult.getResults()));
+		assertThat(regularQueryResult.getResults(),
+				equalTo(mockedQueryResult.getResults()));
 	}
 
 	@Test
@@ -135,7 +132,7 @@ public class JPQLMockeryQueryTest {
 
 			@Override
 			public void matchResult(Boolean result) {
-				MatcherAssert.assertThat(result, Matchers.equalTo(false));
+				assertThat(result, equalTo(false));
 			}
 		});
 	}
@@ -150,7 +147,7 @@ public class JPQLMockeryQueryTest {
 
 			@Override
 			public void matchResult(List<Person> result) {
-				MatcherAssert.assertThat(result, Matchers.hasSize(4));
+				assertThat(result, hasSize(4));
 			}
 		});
 	}
@@ -168,7 +165,7 @@ public class JPQLMockeryQueryTest {
 
 			@Override
 			public void matchResult(List<Person> result) {
-				MatcherAssert.assertThat(result, Matchers.hasSize(2));
+				assertThat(result, hasSize(2));
 			}
 		});
 	}
@@ -186,7 +183,7 @@ public class JPQLMockeryQueryTest {
 
 			@Override
 			public void matchResult(List<Person> result) {
-				MatcherAssert.assertThat(result, Matchers.hasSize(2));
+				assertThat(result, hasSize(2));
 			}
 		});
 	}
@@ -201,7 +198,7 @@ public class JPQLMockeryQueryTest {
 
 			@Override
 			public void matchResult(List<Person> result) {
-				MatcherAssert.assertThat(result, Matchers.hasSize(0));
+				assertThat(result, hasSize(0));
 			}
 		});
 	}
@@ -216,7 +213,7 @@ public class JPQLMockeryQueryTest {
 
 			@Override
 			public void matchResult(Boolean result) {
-				MatcherAssert.assertThat(result, Matchers.equalTo(true));
+				assertThat(result, equalTo(true));
 			}
 		});
 	}
@@ -231,7 +228,7 @@ public class JPQLMockeryQueryTest {
 
 			@Override
 			public void matchResult(List<String> result) {
-				MatcherAssert.assertThat(result, Matchers.hasSize(4));
+				assertThat(result, hasSize(4));
 			}
 		});
 	}
@@ -247,7 +244,7 @@ public class JPQLMockeryQueryTest {
 
 			@Override
 			public void matchResult(String result) {
-				MatcherAssert.assertThat(result, Matchers.equalTo("Pedro"));
+				assertThat(result, equalTo("Pedro"));
 			}
 		});
 	}
@@ -262,12 +259,9 @@ public class JPQLMockeryQueryTest {
 
 			@Override
 			public void matchResult(SearchResults<String> result) {
-				MatcherAssert.assertThat(result.getTotal(),
-						Matchers.equalTo(4L));
-				MatcherAssert.assertThat(result.getLimit(),
-						Matchers.equalTo(1L));
-				MatcherAssert.assertThat(result.getOffset(),
-						Matchers.equalTo(2L));
+				assertThat(result.getTotal(), equalTo(4L));
+				assertThat(result.getLimit(), equalTo(1L));
+				assertThat(result.getOffset(), equalTo(2L));
 			}
 		});
 	}
@@ -282,7 +276,7 @@ public class JPQLMockeryQueryTest {
 
 			@Override
 			public void matchResult(String result) {
-				MatcherAssert.assertThat(result, Matchers.equalTo("Juka"));
+				assertThat(result, equalTo("Juka"));
 			}
 		});
 	}
@@ -297,7 +291,7 @@ public class JPQLMockeryQueryTest {
 
 			@Override
 			public void matchResult(Person result) {
-				MatcherAssert.assertThat(result, Matchers.nullValue());
+				assertThat(result, nullValue());
 			}
 		});
 	}
@@ -313,11 +307,9 @@ public class JPQLMockeryQueryTest {
 
 			@Override
 			public void matchResult(Tuple result) {
-				MatcherAssert.assertThat(result, Matchers.notNullValue());
-				MatcherAssert.assertThat(result.get(p.name),
-						Matchers.equalTo("Pedro"));
-				MatcherAssert.assertThat(result.get(p.child.size()),
-						Matchers.equalTo(1));
+				assertThat(result, notNullValue());
+				assertThat(result.get(p.name), equalTo("Pedro"));
+				assertThat(result.get(p.child.size()), equalTo(1));
 			}
 		});
 	}
@@ -339,7 +331,7 @@ public class JPQLMockeryQueryTest {
 
 			@Override
 			public void matchResult(List<Person> result) {
-				MatcherAssert.assertThat(result, Matchers.hasSize(3));
+				assertThat(result, hasSize(3));
 			}
 		});
 	}
@@ -372,7 +364,7 @@ public class JPQLMockeryQueryTest {
 			@Override
 			public void matchResult(List<Person> result) {
 				assertThat(result, hasSize(4));
-				assertThat(result.get(1).getAddress(), is(notNullValue()));
+				assertThat(result.get(1).getAddress(), notNullValue());
 				assertThat(result.get(1).getAddress(), equalTo(a1));
 			}
 		});
@@ -389,15 +381,15 @@ public class JPQLMockeryQueryTest {
 	//
 	// @Override
 	// public void matchResult(List<String> result) {
-	// MatcherAssert.assertThat(result, Matchers.hasSize(4));
-	// MatcherAssert.assertThat(result.get(0),
-	// Matchers.equalTo("42"));
-	// MatcherAssert.assertThat(result.get(1),
-	// Matchers.equalTo("42"));
-	// MatcherAssert.assertThat(result.get(2),
-	// Matchers.equalTo("42"));
-	// MatcherAssert.assertThat(result.get(3),
-	// Matchers.equalTo("42"));
+	// assertThat(result, hasSize(4));
+	// assertThat(result.get(0),
+	// equalTo("42"));
+	// assertThat(result.get(1),
+	// equalTo("42"));
+	// assertThat(result.get(2),
+	// equalTo("42"));
+	// assertThat(result.get(3),
+	// equalTo("42"));
 	// }
 	// });
 	// }
