@@ -104,6 +104,14 @@ public class Person {
 		return this;
 	}
 
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -147,4 +155,9 @@ public class Person {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "Person [id=" + id + ", name=" + name + ", age=" + age
+				+ ", child=" + child + ", address=" + address + "]";
+	}
 }

@@ -1,5 +1,11 @@
 package com.marvinformatics.kiss.querydslmockery;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,10 +22,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.marvinformatics.kiss.querydslmockery.entity.Address;
-import com.marvinformatics.kiss.querydslmockery.entity.PeopleLocation;
 import com.marvinformatics.kiss.querydslmockery.entity.Person;
 import com.marvinformatics.kiss.querydslmockery.entity.QAddress;
-import com.marvinformatics.kiss.querydslmockery.entity.QPeopleLocation;
 import com.marvinformatics.kiss.querydslmockery.entity.QPerson;
 import com.mysema.query.NonUniqueResultException;
 import com.mysema.query.SearchResults;
@@ -356,29 +360,23 @@ public class JPQLMockeryQueryTest {
 		});
 	}
 
-	// @Test
-	// public void leftJoin() {
-	// execute(new Mockery<List<PeopleLocation>>() {
-	// @Override
-	// public List<PeopleLocation> runQuery(JPQLQuery query) {
-	// return query.from(p).leftJoin(p.address, a).orderBy(p.id.asc())
-	// .list(new QPeopleLocation(p.name, a.city));
-	// }
-	//
-	// @Override
-	// public void matchResult(List<PeopleLocation> result) {
-	// MatcherAssert.assertThat(result, Matchers.hasSize(4));
-	// MatcherAssert.assertThat(result.get(0).getCity(),
-	// Matchers.nullValue());
-	// MatcherAssert.assertThat(result.get(1).getCity(),
-	// Matchers.notNullValue());
-	// MatcherAssert.assertThat(result.get(2).getCity(),
-	// Matchers.nullValue());
-	// MatcherAssert.assertThat(result.get(3).getCity(),
-	// Matchers.nullValue());
-	// }
-	// });
-	// }
+	@Test
+	public void leftJoin() {
+		execute(new Mockery<List<Person>>() {
+			@Override
+			public List<Person> runQuery(JPQLQuery query) {
+				return query.from(p).leftJoin(p.address, a).orderBy(p.id.asc())
+						.list(p);
+			}
+
+			@Override
+			public void matchResult(List<Person> result) {
+				assertThat(result, hasSize(4));
+				assertThat(result.get(1).getAddress(), is(notNullValue()));
+				assertThat(result.get(1).getAddress(), equalTo(a1));
+			}
+		});
+	}
 	//
 	// @Test
 	// public void subquery() {

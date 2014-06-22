@@ -195,6 +195,39 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 
 	/** {@inheritDoc} */
 	@Override
+	public <P> JPQLQuery leftJoin(CollectionExpression<?, P> target,
+			Path<P> alias) {
+		queryMixin.leftJoin(target, alias);
+		return this;
+	}
+
+	@Override
+	public <P> JPQLQuery leftJoin(CollectionExpression<?, P> target) {
+		return this;
+	}
+
+	@Override
+	public <P> JPQLQuery leftJoin(EntityPath<P> target) {
+		return this;
+	}
+
+	@Override
+	public <P> JPQLQuery leftJoin(EntityPath<P> target, Path<P> alias) {
+		return this;
+	}
+
+	@Override
+	public <P> JPQLQuery leftJoin(MapExpression<?, P> target) {
+		return this;
+	}
+
+	@Override
+	public <P> JPQLQuery leftJoin(MapExpression<?, P> target, Path<P> alias) {
+		return this;
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public <RT> List<RT> list(Expression<RT> projection) {
 		try {
 			projection = queryMixin.convert(projection, true);
