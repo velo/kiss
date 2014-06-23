@@ -162,6 +162,70 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 		return this;
 	}
 
+	@Override
+	public <P> JPQLQuery innerJoin(CollectionExpression<?, P> target) {
+		return join(target);
+	}
+
+	@Override
+	public <P> JPQLQuery innerJoin(CollectionExpression<?, P> target,
+			Path<P> alias) {
+		return join(target, alias);
+	}
+
+	@Override
+	public <P> JPQLQuery innerJoin(EntityPath<P> target) {
+		return join(target);
+	}
+
+	@Override
+	public <P> JPQLQuery innerJoin(EntityPath<P> target, Path<P> alias) {
+		return join(target, alias);
+	}
+
+	@Override
+	public <P> JPQLQuery innerJoin(MapExpression<?, P> target) {
+		return join(target);
+	}
+
+	@Override
+	public <P> JPQLQuery innerJoin(MapExpression<?, P> target, Path<P> alias) {
+		return join(target, alias);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <P> JPQLQuery leftJoin(CollectionExpression<?, P> target,
+			Path<P> alias) {
+		queryMixin.leftJoin(target, alias);
+		return this;
+	}
+
+	@Override
+	public <P> JPQLQuery leftJoin(CollectionExpression<?, P> target) {
+		return this;
+	}
+
+	@Override
+	public <P> JPQLQuery leftJoin(EntityPath<P> target) {
+		return this;
+	}
+
+	@Override
+	public <P> JPQLQuery leftJoin(EntityPath<P> target, Path<P> alias) {
+		return this;
+	}
+
+	@Override
+	public <P> JPQLQuery leftJoin(MapExpression<?, P> target) {
+		return this;
+	}
+
+	@Override
+	public <P> JPQLQuery leftJoin(MapExpression<?, P> target, Path<P> alias) {
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public <RT> List<RT> list(Expression<RT> projection) {
