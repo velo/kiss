@@ -8,7 +8,7 @@ import com.mysema.query.collections.CollQueryFunctions;
  * <p>
  * MockeryQueryFunctions class.
  * </p>
- * 
+ *
  * @author Marvin
  * @since 0.8
  */
@@ -18,7 +18,7 @@ public class MockeryQueryFunctions {
 	 * <p>
 	 * equals
 	 * </p>
-	 * 
+	 *
 	 * @since 0.8
 	 */
 	public static boolean equals(Object o1, Object o2) {
