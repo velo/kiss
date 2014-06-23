@@ -10,7 +10,7 @@
 
   <groupId>com.marvinformatics</groupId>
   <artifactId>kiss</artifactId>
-  <version>0.14-SNAPSHOT</version>
+  <version>0.14</version>
   <packaging>pom</packaging>
 
   <name>kiss</name>
@@ -41,6 +41,7 @@
 
   <modules>
     <module>kiss-throws</module>
+    <module>kiss-matchers</module>
     <module>kiss-querydsl-mockery</module>
   </modules>
 
