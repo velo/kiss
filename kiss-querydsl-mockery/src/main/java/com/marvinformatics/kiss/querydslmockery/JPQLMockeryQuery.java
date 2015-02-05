@@ -47,9 +47,12 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 	 * </p>
 	 */
 	public JPQLMockeryQuery() {
+		this( new DefaultEvaluatorFactory( MockeryQueryTemplates.DEFAULT ) );
+	}
+
+	public JPQLMockeryQuery(DefaultEvaluatorFactory evaluatorFactory) {
 		this( new CollQueryMixin<JPQLMockeryQuery>( new DefaultQueryMetadata() ),
-				new DefaultQueryEngine(
-						new DefaultEvaluatorFactory( MockeryQueryTemplates.DEFAULT ) ) );
+				new DefaultQueryEngine( evaluatorFactory ) );
 		try {
 			clearSerializerOperators();
 		} catch (Exception e) {
