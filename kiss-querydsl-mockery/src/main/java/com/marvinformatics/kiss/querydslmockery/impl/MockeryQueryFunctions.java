@@ -1,8 +1,9 @@
 package com.marvinformatics.kiss.querydslmockery.impl;
 
+import java.util.Arrays;
 import java.util.Collection;
 
-import com.mysema.query.collections.CollQueryFunctions;
+import com.querydsl.collections.CollQueryFunctions;
 
 /**
  * <p>
@@ -80,5 +81,13 @@ public class MockeryQueryFunctions {
 
 		return col.contains( filter );
 	}
+
+    public static <T> Collection<T> leftJoin(Collection<T> coll) {
+      return CollQueryFunctions.leftJoin(coll);
+    }
+    
+    public static <T> Collection<T> leftJoin(T coll) {
+      return CollQueryFunctions.leftJoin(Arrays.asList(coll));
+    }
 
 }

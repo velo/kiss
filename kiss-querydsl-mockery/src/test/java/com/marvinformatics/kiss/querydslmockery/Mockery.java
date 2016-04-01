@@ -1,10 +1,10 @@
 package com.marvinformatics.kiss.querydslmockery;
 
-import com.mysema.query.jpa.JPQLQuery;
+import com.querydsl.jpa.JPQLQuery;
 
-public interface Mockery<E> {
+public interface Mockery<E, X> {
 
-	E runQuery(JPQLQuery query);
+	E runQuery(JPQLQuery<X> query);
 
 	void matchResult(E result);
 

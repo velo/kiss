@@ -1,6 +1,6 @@
 package com.marvinformatics.kiss.querydslmockery.entity;
 
-import com.mysema.query.annotations.QueryProjection;
+import com.querydsl.core.annotations.QueryProjection;
 
 public class PeopleLocation {
 

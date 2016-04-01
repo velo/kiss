@@ -10,17 +10,17 @@
   <artifactId>kiss-querydsl-mockery</artifactId>
 
   <properties>
-    <querydsl.version>3.3.2</querydsl.version>
+    <querydsl.version>4.0.9</querydsl.version>
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>com.mysema.querydsl</groupId>
+      <groupId>com.querydsl</groupId>
       <artifactId>querydsl-collections</artifactId>
       <version>${querydsl.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.mysema.querydsl</groupId>
+      <groupId>com.querydsl</groupId>
       <artifactId>querydsl-jpa</artifactId>
       <version>${querydsl.version}</version>
     </dependency>
@@ -35,7 +35,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
-      <version>4.1.7.Final</version>
+      <version>4.3.11.Final</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -58,7 +58,7 @@
 
     <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.0-api</artifactId>
+      <artifactId>hibernate-jpa-2.1-api</artifactId>
       <version>1.0.0.Final</version>
       <scope>provided</scope>
     </dependency>
@@ -81,12 +81,15 @@
         </executions>
         <configuration>
           <processors>
-            <processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>
+            <processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
           </processors>
+          <includes>
+            <include>**/entity/**</include>
+          </includes>
         </configuration>
         <dependencies>
           <dependency>
-            <groupId>com.mysema.querydsl</groupId>
+            <groupId>com.querydsl</groupId>
             <artifactId>querydsl-apt</artifactId>
             <version>${querydsl.version}</version>
           </dependency>

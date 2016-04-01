@@ -3,8 +3,6 @@ package com.marvinformatics.kiss.querydslmockery;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,7 +13,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
+import org.hamcrest.Matchers;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -23,10 +23,11 @@ import com.marvinformatics.kiss.querydslmockery.entity.Address;
 import com.marvinformatics.kiss.querydslmockery.entity.Person;
 import com.marvinformatics.kiss.querydslmockery.entity.QAddress;
 import com.marvinformatics.kiss.querydslmockery.entity.QPerson;
-import com.mysema.query.NonUniqueResultException;
-import com.mysema.query.SearchResults;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.jpa.impl.JPAQuery;
+import com.querydsl.core.NonUniqueResultException;
+import com.querydsl.core.QueryResults;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
+import com.querydsl.jpa.impl.JPAQuery;
 
 public abstract class AbstractJPQLMockeryQueryTest {
 
@@ -77,43 +78,43 @@ public abstract class AbstractJPQLMockeryQueryTest {
 	QPerson p = QPerson.person;
 	QAddress a = QAddress.address;
 
-	protected <E> void execute(Mockery<E> mockeryParameters) {
-		JPAQuery regularQuery = new JPAQuery( em );
-		E regularQueryResult = mockeryParameters.runQuery( regularQuery );
-		mockeryParameters.matchResult( regularQueryResult );
+	protected <E, X> void execute(Mockery<E, X> mockeryParameters) {
+		JPAQuery<X> regularQuery = new JPAQuery<>( em );
+        E regularQueryResult = mockeryParameters.runQuery( regularQuery );
+        mockeryParameters.matchResult((E) regularQueryResult );
 
-		JPQLMockeryQuery mockedQuery = createJPQLMockeryQuery();
+		JPQLMockeryQuery<X> mockedQuery = createJPQLMockeryQuery();
 		mockedQuery.bind( p, people );
 		mockedQuery.bind( a, addresses );
-		E mockedQueryResult = mockeryParameters.runQuery( mockedQuery );
-		mockeryParameters.matchResult( mockedQueryResult );
+        E mockedQueryResult = mockeryParameters.runQuery( mockedQuery );
+        mockeryParameters.matchResult(mockedQueryResult );
 
-		assertThat( regularQueryResult, equalTo( mockedQueryResult ) );
+		if(mockedQueryResult instanceof QueryResults)
+		  assertQueryResultEqual( (QueryResults<?>) regularQueryResult, (QueryResults<?>) mockedQueryResult );
+		else
+		  assertThat( regularQueryResult, equalTo( mockedQueryResult ) );
 	}
 
-	protected <E> void execute(MockerySearchResults<E> mockery) {
-		JPAQuery regularQuery = new JPAQuery( em );
-		SearchResults<E> regularQueryResult = mockery.runQuery( regularQuery );
-		mockery.matchResult( regularQueryResult );
+	private void assertQueryResultEqual(QueryResults<?> left, QueryResults<?> right)
+    {
+        Assert.assertEquals(left.getLimit(), right.getLimit());
+        Assert.assertEquals(left.getOffset(), right.getOffset());
+        Assert.assertEquals(left.getTotal(), right.getTotal());
+        Assert.assertEquals(left.getResults(), right.getResults());
+    }
 
-		JPQLMockeryQuery mockedQuery = createJPQLMockeryQuery();
-		mockedQuery.bind( p, people );
-		mockedQuery.bind( a, addresses );
-		SearchResults<E> mockedQueryResult = mockery.runQuery( mockedQuery );
-		mockery.matchResult( mockedQueryResult );
-
-		assertThat( regularQueryResult.getResults(),
-				equalTo( mockedQueryResult.getResults() ) );
-	}
-
-	protected abstract JPQLMockeryQuery createJPQLMockeryQuery();
+  protected abstract <X> JPQLMockeryQuery<X> createJPQLMockeryQuery();
 
 	@Test
 	public void count() {
-		execute( new Mockery<Long>() {
+		execute( new Mockery<Long, Person>() {
 			@Override
-			public Long runQuery(JPQLQuery query) {
-				return query.from( p ).where( p.child.size().eq( 2 ) ).count();
+			public Long runQuery(JPQLQuery<Person> query) {
+				return query
+				    .select( p )
+				    .from( p )
+				    .where( p.child.size().eq( 2 ) )
+				    .fetchCount();
 			}
 
 			@Override
@@ -124,26 +125,14 @@ public abstract class AbstractJPQLMockeryQueryTest {
 	}
 
 	@Test
-	public void exists() {
-		execute( new Mockery<Boolean>() {
-			@Override
-			public Boolean runQuery(JPQLQuery query) {
-				return query.from( p ).where( p.age.eq( 1L ) ).exists();
-			}
-
-			@Override
-			public void matchResult(Boolean result) {
-				assertThat( result, equalTo( false ) );
-			}
-		} );
-	}
-
-	@Test
 	public void from() {
-		execute( new Mockery<List<Person>>() {
+		execute( new Mockery<List<Person>, Person>() {
 			@Override
-			public List<Person> runQuery(JPQLQuery query) {
-				return query.from( p ).list( p );
+			public List<Person> runQuery(JPQLQuery<Person> query) {
+				return query
+				    .select( p )
+				    .from( p )
+				    .fetch();
 			}
 
 			@Override
@@ -155,13 +144,17 @@ public abstract class AbstractJPQLMockeryQueryTest {
 
 	@Test
 	public void join() {
-		execute( new Mockery<List<Person>>() {
+		execute( new Mockery<List<Person>, Person>() {
 			QPerson c = new QPerson( "child" );
 
 			@Override
-			public List<Person> runQuery(JPQLQuery query) {
-				return query.from( p ).join( p.child, c ).where( c.name.eq( "Juka" ) )
-						.list( p );
+			public List<Person> runQuery(JPQLQuery<Person> query) {
+				return query
+				        .select( p )
+				        .from( p )
+				        .join( p.child, c )
+				        .where( c.name.eq( "Juka" ) )
+						.fetch();
 			}
 
 			@Override
@@ -173,13 +166,17 @@ public abstract class AbstractJPQLMockeryQueryTest {
 
 	@Test
 	public void innerJoin() {
-		execute( new Mockery<List<Person>>() {
+		execute( new Mockery<List<Person>, Person>() {
 			QPerson c = new QPerson( "child" );
 
 			@Override
-			public List<Person> runQuery(JPQLQuery query) {
-				return query.from( p ).innerJoin( p.child, c )
-						.where( c.name.eq( "Juka" ) ).list( p );
+			public List<Person> runQuery(JPQLQuery<Person> query) {
+				return query
+				        .select( p )
+				        .from( p )
+				        .innerJoin( p.child, c )
+						.where( c.name.eq( "Juka" ) )
+						.fetch();
 			}
 
 			@Override
@@ -191,10 +188,14 @@ public abstract class AbstractJPQLMockeryQueryTest {
 
 	@Test
 	public void noMatchCondition() {
-		execute( new Mockery<List<Person>>() {
+		execute( new Mockery<List<Person>, Person>() {
 			@Override
-			public List<Person> runQuery(JPQLQuery query) {
-				return query.from( p ).where( p.name.eq( "bananas" ) ).list( p );
+			public List<Person> runQuery(JPQLQuery<Person> query) {
+				return query
+				        .select( p )
+				        .from( p )
+				        .where( p.name.eq( "bananas" ) )
+				        .fetch();
 			}
 
 			@Override
@@ -206,10 +207,14 @@ public abstract class AbstractJPQLMockeryQueryTest {
 
 	@Test
 	public void notExists() {
-		execute( new Mockery<Boolean>() {
+		execute( new Mockery<Boolean, Person>() {
 			@Override
-			public Boolean runQuery(JPQLQuery query) {
-				return query.from( p ).where( p.age.eq( 1L ) ).notExists();
+			public Boolean runQuery(JPQLQuery<Person> query) {
+				return query
+				        .select( p )
+				        .from( p )
+				        .where( p.age.eq( 1L ) )
+				        .fetchFirst() == null;
 			}
 
 			@Override
@@ -221,10 +226,14 @@ public abstract class AbstractJPQLMockeryQueryTest {
 
 	@Test
 	public void orderBy() {
-		execute( new Mockery<List<String>>() {
+		execute( new Mockery<List<String>, Person>() {
 			@Override
-			public List<String> runQuery(JPQLQuery query) {
-				return query.from( p ).orderBy( p.name.asc() ).list( p.id );
+			public List<String> runQuery(JPQLQuery<Person> query) {
+				return query
+				        .select( p.id )
+				        .from( p )
+				        .orderBy( p.name.asc() )
+				        .fetch();
 			}
 
 			@Override
@@ -236,11 +245,14 @@ public abstract class AbstractJPQLMockeryQueryTest {
 
 	@Test
 	public void singleResult() {
-		execute( new Mockery<String>() {
+		execute( new Mockery<String, Person>() {
 			@Override
-			public String runQuery(JPQLQuery query) {
-				return query.from( p ).where( p.id.eq( "3456" ) )
-						.singleResult( p.name );
+			public String runQuery(JPQLQuery<Person> query) {
+				return query
+				        .select( p.name )
+				        .from( p )
+				        .where( p.id.eq( "3456" ) )
+						.fetchFirst();
 			}
 
 			@Override
@@ -251,28 +263,56 @@ public abstract class AbstractJPQLMockeryQueryTest {
 	}
 
 	@Test
-	public void listResults() {
-		execute( new MockerySearchResults<String>() {
+	public void fetchResults() {
+		execute( new Mockery<QueryResults<String>, Person>() {
 			@Override
-			public SearchResults<String> runQuery(JPQLQuery query) {
-				return query.from( p ).offset( 2 ).limit( 1 ).listResults( p.name );
+			public QueryResults<String> runQuery(JPQLQuery<Person> query) {
+				return query
+				        .select( p.name )
+				        .from( p )
+				        .offset( 2 )
+				        .limit( 1 )
+				        .fetchResults();
 			}
 
 			@Override
-			public void matchResult(SearchResults<String> result) {
+			public void matchResult(QueryResults<String> result) {
 				assertThat( result.getTotal(), equalTo( 4L ) );
 				assertThat( result.getLimit(), equalTo( 1L ) );
 				assertThat( result.getOffset(), equalTo( 2L ) );
 			}
 		} );
 	}
-
+	
 	@Test
+	public void fetchNoResults() {
+	  execute( new Mockery<QueryResults<String>, Person>() {
+	    @Override
+	    public QueryResults<String> runQuery(JPQLQuery<Person> query) {
+	      return query
+	          .select( p.name )
+	          .from( p )
+	          .where( p.name.eq("name is not found") )
+	          .fetchResults();
+	    }
+	    
+	    @Override
+	    public void matchResult(QueryResults<String> result) {
+	      assertThat( result.getTotal(), equalTo( 0L ) );
+	      assertThat( result.getOffset(), equalTo( 0L ) );
+	    }
+	  } );
+	}
+
+	@Test(expected = NonUniqueResultException.class)
 	public void singleResultNonUniqueResult() {
-		execute( new Mockery<String>() {
+		execute( new Mockery<String, Person>() {
 			@Override
-			public String runQuery(JPQLQuery query) {
-				return query.from( p ).singleResult( p.name );
+			public String runQuery(JPQLQuery<Person> query) {
+				return query
+				        .select( p.name )
+				        .from( p )
+				        .fetchOne();
 			}
 
 			@Override
@@ -284,32 +324,40 @@ public abstract class AbstractJPQLMockeryQueryTest {
 
 	@Test
 	public void singleResultNoResult() {
-		execute( new Mockery<Person>() {
+		execute( new Mockery<Person, Person>() {
 			@Override
-			public Person runQuery(JPQLQuery query) {
-				return query.from( p ).where( p.id.eq( "42L" ) ).singleResult( p );
+			public Person runQuery(JPQLQuery<Person> query) {
+				return query
+				        .select( p )
+				        .from( p )
+				        .where( p.id.eq( "42L" ) )
+				        .fetchOne();
 			}
 
 			@Override
 			public void matchResult(Person result) {
-				assertThat( result, nullValue() );
+				assertThat( result, Matchers.nullValue() );
 			}
 		} );
 	}
 
 	@Test(expected = NonUniqueResultException.class)
 	public void uniqueResultNonUniqueResult() {
-		JPQLMockeryQuery mq = new JPQLMockeryQuery();
+		JPQLMockeryQuery<Person> mq = new JPQLMockeryQuery<>();
 		mq.bind( p, people );
-		mq.from( p ).uniqueResult( p );
+		mq.select( p ).from( p ).fetchOne();
 	}
 
 	@Test
 	public void where() {
-		execute( new Mockery<List<Person>>() {
+		execute( new Mockery<List<Person>, Person>() {
 			@Override
-			public List<Person> runQuery(JPQLQuery query) {
-				return query.from( p ).where( p.name.like( "%a%" ) ).list( p );
+			public List<Person> runQuery(JPQLQuery<Person> query) {
+				return query
+				        .select( p )
+				        .from( p )
+				        .where( p.name.like( "%a%" ) )
+				        .fetch();
 			}
 
 			@Override
@@ -321,12 +369,15 @@ public abstract class AbstractJPQLMockeryQueryTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void inEmptyListShouldFail() throws Exception {
-		execute( new Mockery<List<Person>>() {
+		execute( new Mockery<List<Person>, Person>() {
 
 			@Override
-			public List<Person> runQuery(JPQLQuery query) {
-				return query.from( p ).where( p.id.in( new ArrayList<String>() ) )
-						.list( p );
+			public List<Person> runQuery(JPQLQuery<Person> query) {
+				return query
+				        .select( p )
+				        .from( p )
+				        .where( p.id.in( new ArrayList<String>() ) )
+						.fetch();
 			}
 
 			@Override
@@ -337,17 +388,23 @@ public abstract class AbstractJPQLMockeryQueryTest {
 
 	@Test
 	public void leftJoin() {
-		execute( new Mockery<List<Person>>() {
+	  final QAddress otherA = new QAddress("another_A");
+
+		execute( new Mockery<List<Person>, Person>() {
 			@Override
-			public List<Person> runQuery(JPQLQuery query) {
-				return query.from( p ).leftJoin( p.address, a ).orderBy( p.id.asc() )
-						.list( p );
+			public List<Person> runQuery(JPQLQuery<Person> query) {
+				return query
+				        .select( p )
+				        .from( p )
+				        .leftJoin( p.address, otherA )
+				        .orderBy( p.id.asc() )
+						.fetch();
 			}
 
 			@Override
 			public void matchResult(List<Person> result) {
 				assertThat( result, hasSize( 4 ) );
-				assertThat( result.get( 1 ).getAddress(), notNullValue() );
+				assertThat( result.get( 1 ).getAddress(), Matchers.notNullValue() );
 				assertThat( result.get( 1 ).getAddress(), equalTo( a1 ) );
 			}
 		} );

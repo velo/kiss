@@ -6,23 +6,27 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import org.junit.Test;
 
-import com.mysema.query.Tuple;
-import com.mysema.query.jpa.JPQLQuery;
+import com.marvinformatics.kiss.querydslmockery.entity.Person;
+import com.querydsl.core.Tuple;
+import com.querydsl.jpa.JPQLQuery;
 
 public class JPQLMockeryQueryTest extends AbstractJPQLMockeryQueryTest {
 
 	@Override
-	protected JPQLMockeryQuery createJPQLMockeryQuery() {
-		return new JPQLMockeryQuery();
+	protected JPQLMockeryQuery<Person> createJPQLMockeryQuery() {
+		return new JPQLMockeryQuery<Person>();
 	}
 
 	@Test
 	public void singleResultTuple() {
-		execute( new Mockery<Tuple>() {
+		execute( new Mockery<Tuple, Person>() {
 			@Override
-			public Tuple runQuery(JPQLQuery query) {
-				return query.from( p ).where( p.id.eq( "3456" ) )
-						.singleResult( p.name, p.child.size() );
+			public Tuple runQuery(JPQLQuery<Person> query) {
+				return query
+    				    .select( p.name, p.child.size() )
+    				    .from( p )
+    				    .where( p.id.eq( "3456" ) )
+						.fetchOne();
 			}
 
 			@Override

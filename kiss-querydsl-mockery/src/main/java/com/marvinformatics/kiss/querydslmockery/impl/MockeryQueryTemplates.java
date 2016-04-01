@@ -1,7 +1,7 @@
 package com.marvinformatics.kiss.querydslmockery.impl;
 
-import com.mysema.query.collections.CollQueryTemplates;
-import com.mysema.query.types.Ops;
+import com.querydsl.collections.CollQueryTemplates;
+import com.querydsl.core.types.Ops;
 
 /**
  * <p>MockeryQueryTemplates class.</p>

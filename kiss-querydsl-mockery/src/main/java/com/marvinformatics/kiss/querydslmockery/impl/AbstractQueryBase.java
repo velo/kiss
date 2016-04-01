@@ -1,22 +1,23 @@
 package com.marvinformatics.kiss.querydslmockery.impl;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
 
 import com.marvinformatics.kiss.querydslmockery.JPQLMockeryQuery;
-import com.mysema.commons.lang.CloseableIterator;
-import com.mysema.query.ResultTransformer;
-import com.mysema.query.SearchResults;
-import com.mysema.query.Tuple;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.support.QueryBase;
-import com.mysema.query.support.QueryMixin;
-import com.mysema.query.types.CollectionExpression;
-import com.mysema.query.types.EntityPath;
-import com.mysema.query.types.Expression;
-import com.mysema.query.types.MapExpression;
-import com.mysema.query.types.Path;
-import com.mysema.query.types.Predicate;
+import com.querydsl.core.QueryModifiers;
+import com.querydsl.core.QueryResults;
+import com.querydsl.core.support.FetchableQueryBase;
+import com.querydsl.core.support.QueryMixin;
+import com.querydsl.core.types.CollectionExpression;
+import com.querydsl.core.types.EntityPath;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.MapExpression;
+import com.querydsl.core.types.ParamExpression;
+import com.querydsl.core.types.Path;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.Visitor;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.BooleanOperation;
+import com.querydsl.jpa.JPQLQuery;
 
 /**
  *
@@ -28,361 +29,415 @@ import com.mysema.query.types.Predicate;
  * @author Marvin
  * @since 0.8
  */
-public abstract class AbstractQueryBase<Q extends QueryBase<Q> & JPQLQuery>
-		extends QueryBase<Q> implements JPQLQuery {
+public abstract class AbstractQueryBase<T, Q extends FetchableQueryBase<T, Q> & JPQLQuery<T>>
+		extends FetchableQueryBase<T, Q> implements JPQLQuery<T> {
 
-	/**
+  private static final long serialVersionUID = 331427590935411125L;
+
+  /**
 	 * <p>Constructor for AbstractQueryBase.</p>
 	 */
 	public AbstractQueryBase(QueryMixin<Q> queryMixin) {
 		super(queryMixin);
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public JPQLQuery from(EntityPath<?>... sources) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public Q restrict(QueryModifiers modifiers)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery innerJoin(EntityPath<P> target) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <T> Q set(ParamExpression<T> param, T value)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery innerJoin(EntityPath<P> target, Path<P> alias) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public Q distinct()
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery innerJoin(CollectionExpression<?, P> target) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public long fetchCount()
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery innerJoin(CollectionExpression<?, P> target,
-			Path<P> alias) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public Q groupBy(Expression<?>... o)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery innerJoin(MapExpression<?, P> target) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public Q having(Predicate... o)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery innerJoin(MapExpression<?, P> target, Path<P> alias) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public BooleanExpression eq(Expression<? extends T> expr)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery join(EntityPath<P> target) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public BooleanExpression eq(T constant)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery join(EntityPath<P> target, Path<P> alias) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public BooleanExpression ne(Expression<? extends T> expr)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery join(CollectionExpression<?, P> target) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public BooleanExpression ne(T constant)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery join(CollectionExpression<?, P> target, Path<P> alias) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public BooleanExpression contains(Expression<? extends T> right)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery join(MapExpression<?, P> target) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public BooleanExpression contains(T constant)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery join(MapExpression<?, P> target, Path<P> alias) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public BooleanExpression exists()
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery leftJoin(EntityPath<P> target) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public BooleanExpression notExists()
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery leftJoin(EntityPath<P> target, Path<P> alias) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public BooleanExpression lt(Expression<? extends T> expr)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery leftJoin(CollectionExpression<?, P> target) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public BooleanExpression lt(T constant)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery leftJoin(CollectionExpression<?, P> target,
-			Path<P> alias) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public BooleanExpression gt(Expression<? extends T> expr)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery leftJoin(MapExpression<?, P> target) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public BooleanExpression gt(T constant)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery leftJoin(MapExpression<?, P> target, Path<P> alias) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public BooleanExpression loe(Expression<? extends T> expr)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery rightJoin(EntityPath<P> target) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public BooleanExpression loe(T constant)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery rightJoin(EntityPath<P> target, Path<P> alias) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public BooleanExpression goe(Expression<? extends T> expr)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery rightJoin(CollectionExpression<?, P> target) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public BooleanExpression goe(T constant)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery rightJoin(CollectionExpression<?, P> target,
-			Path<P> alias) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public BooleanOperation isNull()
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery rightJoin(MapExpression<?, P> target) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public BooleanOperation isNotNull()
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery rightJoin(MapExpression<?, P> target, Path<P> alias) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public BooleanExpression in(Collection<? extends T> right)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery fullJoin(EntityPath<P> target) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public BooleanExpression in(T... right)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery fullJoin(EntityPath<P> target, Path<P> alias) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <R, C> R accept(Visitor<R, C> v, C context)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery fullJoin(CollectionExpression<?, P> target) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public Class<? extends T> getType()
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery fullJoin(CollectionExpression<?, P> target,
-			Path<P> alias) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public Q from(EntityPath<?>... sources)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery fullJoin(MapExpression<?, P> target) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <P> Q from(CollectionExpression<?, P> target, Path<P> alias)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery fullJoin(MapExpression<?, P> target, Path<P> alias) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <P> Q innerJoin(EntityPath<P> target)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public JPQLQuery on(Predicate... condition) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <P> Q innerJoin(EntityPath<P> target, Path<P> alias)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public long count() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <P> Q innerJoin(CollectionExpression<?, P> target)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean exists() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <P> Q innerJoin(CollectionExpression<?, P> target, Path<P> alias)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean notExists() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <P> Q innerJoin(MapExpression<?, P> target)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public CloseableIterator<Tuple> iterate(Expression<?>... args) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <P> Q innerJoin(MapExpression<?, P> target, Path<P> alias)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <RT> CloseableIterator<RT> iterate(Expression<RT> projection) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <P> Q join(EntityPath<P> target)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public List<Tuple> list(Expression<?>... args) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <P> Q join(EntityPath<P> target, Path<P> alias)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <RT> List<RT> list(Expression<RT> projection) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <P> Q join(CollectionExpression<?, P> target)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public SearchResults<Tuple> listResults(Expression<?>... args) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <P> Q join(CollectionExpression<?, P> target, Path<P> alias)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <RT> SearchResults<RT> listResults(Expression<RT> projection) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <P> Q join(MapExpression<?, P> target)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <K, V> Map<K, V> map(Expression<K> key, Expression<V> value) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <P> Q join(MapExpression<?, P> target, Path<P> alias)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public Tuple singleResult(Expression<?>... args) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <P> Q leftJoin(EntityPath<P> target)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <RT> RT singleResult(Expression<RT> projection) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <P> Q leftJoin(EntityPath<P> target, Path<P> alias)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <T> T transform(ResultTransformer<T> transformer) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <P> Q leftJoin(CollectionExpression<?, P> target)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public Tuple uniqueResult(Expression<?>... args) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <P> Q leftJoin(CollectionExpression<?, P> target, Path<P> alias)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public <RT> RT uniqueResult(Expression<RT> projection) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <P> Q leftJoin(MapExpression<?, P> target)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public JPQLQuery fetch() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <P> Q leftJoin(MapExpression<?, P> target, Path<P> alias)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public JPQLQuery fetchAll() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public <P> Q rightJoin(EntityPath<P> target)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public <P> Q rightJoin(EntityPath<P> target, Path<P> alias)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public <P> Q rightJoin(CollectionExpression<?, P> target)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public <P> Q rightJoin(CollectionExpression<?, P> target, Path<P> alias)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public <P> Q rightJoin(MapExpression<?, P> target)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public <P> Q rightJoin(MapExpression<?, P> target, Path<P> alias)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public Q on(Predicate... condition)
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public Q fetchJoin()
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public Q fetchAll()
+  {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
+  }
 
 }

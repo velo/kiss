@@ -5,27 +5,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.marvinformatics.kiss.querydslmockery.evaluator.MockeryEvaluatorFactory;
 import com.marvinformatics.kiss.querydslmockery.impl.AbstractQueryBase;
 import com.marvinformatics.kiss.querydslmockery.impl.MockeryQueryTemplates;
-import com.mysema.query.DefaultQueryMetadata;
-import com.mysema.query.JoinType;
-import com.mysema.query.NonUniqueResultException;
-import com.mysema.query.SearchResults;
-import com.mysema.query.Tuple;
-import com.mysema.query.collections.CollQueryMixin;
-import com.mysema.query.collections.CollQuerySerializer;
-import com.mysema.query.collections.DefaultEvaluatorFactory;
-import com.mysema.query.collections.DefaultQueryEngine;
-import com.mysema.query.collections.QueryEngine;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.types.CollectionExpression;
-import com.mysema.query.types.EntityPath;
-import com.mysema.query.types.Expression;
-import com.mysema.query.types.MapExpression;
-import com.mysema.query.types.Operator;
-import com.mysema.query.types.Path;
-import com.mysema.query.types.Predicate;
-import com.mysema.query.types.QTuple;
+import com.mysema.commons.lang.CloseableIterator;
+import com.mysema.commons.lang.IteratorAdapter;
+import com.querydsl.collections.CollQueryMixin;
+import com.querydsl.collections.CollQuerySerializer;
+import com.querydsl.collections.DefaultEvaluatorFactory;
+import com.querydsl.collections.DefaultQueryEngine;
+import com.querydsl.collections.QueryEngine;
+import com.querydsl.core.DefaultQueryMetadata;
+import com.querydsl.core.JoinType;
+import com.querydsl.core.QueryMetadata;
+import com.querydsl.core.QueryResults;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.CollectionExpression;
+import com.querydsl.core.types.EntityPath;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.MapExpression;
+import com.querydsl.core.types.Operator;
+import com.querydsl.core.types.Ops;
+import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 
 /**
  * <p>
@@ -35,9 +38,11 @@ import com.mysema.query.types.QTuple;
  * @author Marvin
  * @since 0.8
  */
-public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
+public class JPQLMockeryQuery<T> extends AbstractQueryBase<T, JPQLMockeryQuery<T>> {
 
-	private final Map<Expression<?>, Iterable<?>> iterables = new HashMap<Expression<?>, Iterable<?>>();
+  private static final long serialVersionUID = 4779907899645076561L;
+
+  private final Map<Expression<?>, Iterable<?>> iterables = new HashMap<Expression<?>, Iterable<?>>();
 
 	private final QueryEngine queryEngine;
 
@@ -47,11 +52,11 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 	 * </p>
 	 */
 	public JPQLMockeryQuery() {
-		this( new DefaultEvaluatorFactory( MockeryQueryTemplates.DEFAULT ) );
+		this( new DefaultEvaluatorFactory( MockeryQueryTemplates.DEFAULT, MockeryEvaluatorFactory.DEFAULT ) );
 	}
 
 	public JPQLMockeryQuery(DefaultEvaluatorFactory evaluatorFactory) {
-		this( new CollQueryMixin<JPQLMockeryQuery>( new DefaultQueryMetadata() ),
+		this( new CollQueryMixin<JPQLMockeryQuery<T>>( new DefaultQueryMetadata() ),
 				new DefaultQueryEngine( evaluatorFactory ) );
 		try {
 			clearSerializerOperators();
@@ -61,12 +66,23 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 		this.queryMixin.setSelf( this );
 	}
 
+    protected void clearSerializerOperators() throws NoSuchFieldException,
+            SecurityException, IllegalArgumentException, IllegalAccessException {
+        Field field = CollQuerySerializer.class
+                .getDeclaredField( "OPERATOR_SYMBOLS" );
+        field.setAccessible( true );
+        @SuppressWarnings("unchecked")
+        Map<Operator, String> OPERATOR_SYMBOLS = (Map<Operator, String>) field
+                .get( null );
+        OPERATOR_SYMBOLS.clear();
+    }
+
 	/**
 	 * <p>
 	 * Constructor for JPQLMockeryQuery.
 	 * </p>
 	 */
-	public JPQLMockeryQuery(CollQueryMixin<JPQLMockeryQuery> queryMixin,
+	public JPQLMockeryQuery(CollQueryMixin<JPQLMockeryQuery<T>> queryMixin,
 			QueryEngine queryEngine) {
 		super( queryMixin );
 		this.queryEngine = queryEngine;
@@ -77,26 +93,16 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 	 * bind
 	 * </p>
 	 */
-	public <A> JPQLMockeryQuery bind(Path<A> entity, Iterable<? extends A> col) {
+	public <A> JPQLMockeryQuery<T> bind(Path<A> entity, Iterable<? extends A> col) {
 		iterables.put( entity, col );
 		queryMixin.getMetadata().addJoin( JoinType.DEFAULT, entity );
 		return this;
 	}
 
-	protected void clearSerializerOperators() throws NoSuchFieldException,
-			SecurityException, IllegalArgumentException, IllegalAccessException {
-		Field field = CollQuerySerializer.class
-				.getDeclaredField( "OPERATOR_SYMBOLS" );
-		field.setAccessible( true );
-		@SuppressWarnings("unchecked")
-		Map<Operator<?>, String> OPERATOR_SYMBOLS = (Map<Operator<?>, String>) field
-				.get( null );
-		OPERATOR_SYMBOLS.clear();
-	}
 
 	/** {@inheritDoc} */
 	@Override
-	public long count() {
+	public long fetchCount() {
 		try {
 			return queryEngine.count( queryMixin.getMetadata(), iterables );
 		} finally {
@@ -106,217 +112,181 @@ public class JPQLMockeryQuery extends AbstractQueryBase<JPQLMockeryQuery> {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean exists() {
-		try {
-			return queryEngine.exists( queryMixin.getMetadata(), iterables );
-		} finally {
-			reset();
-		}
+	public JPQLMockeryQuery<T> from(EntityPath<?>... sources) {
+      return queryMixin.from(sources);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public JPQLQuery fetch() {
-		return this;
+	public <P> JPQLMockeryQuery<T> join(CollectionExpression<?, P> target) {
+	  return queryMixin.innerJoin(target);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public JPQLQuery from(EntityPath<?>... sources) {
-		// seem to be the most reasonable thing to do
-		return this;
+	public <P> JPQLMockeryQuery<T> join(CollectionExpression<?, P> target, Path<P> alias) {
+      return queryMixin.innerJoin(target, alias);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <P> JPQLQuery join(CollectionExpression<?, P> target) {
-		return this;
+	public <P> JPQLMockeryQuery<T> join(EntityPath<P> target) {
+      return queryMixin.innerJoin(target);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <P> JPQLQuery join(CollectionExpression<?, P> target, Path<P> alias) {
-		queryMixin.innerJoin( target, alias );
-		return this;
+	public <P> JPQLMockeryQuery<T> join(EntityPath<P> target, Path<P> alias) {
+      return queryMixin.innerJoin(target, alias);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <P> JPQLQuery join(EntityPath<P> target) {
-		return this;
+	public <P> JPQLMockeryQuery<T> join(MapExpression<?, P> target) {
+      return queryMixin.innerJoin(target);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <P> JPQLQuery join(EntityPath<P> target, Path<P> alias) {
-		return this;
+	public <P> JPQLMockeryQuery<T> join(MapExpression<?, P> target, Path<P> alias) {
+      return queryMixin.innerJoin(target, alias);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <P> JPQLQuery join(MapExpression<?, P> target) {
-		return this;
+	public <P> JPQLMockeryQuery<T> innerJoin(CollectionExpression<?, P> target) {
+      return queryMixin.innerJoin(target);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <P> JPQLQuery join(MapExpression<?, P> target, Path<P> alias) {
-		return this;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery innerJoin(CollectionExpression<?, P> target) {
-		return join( target );
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <P> JPQLQuery innerJoin(CollectionExpression<?, P> target,
+	public <P> JPQLMockeryQuery<T> innerJoin(CollectionExpression<?, P> target,
 			Path<P> alias) {
-		return join( target, alias );
+      return queryMixin.innerJoin(target, alias);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <P> JPQLQuery innerJoin(EntityPath<P> target) {
-		return join( target );
+	public <P> JPQLMockeryQuery<T> innerJoin(EntityPath<P> target) {
+      return queryMixin.innerJoin(target);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <P> JPQLQuery innerJoin(EntityPath<P> target, Path<P> alias) {
-		return join( target, alias );
+	public <P> JPQLMockeryQuery<T> innerJoin(EntityPath<P> target, Path<P> alias) {
+      return queryMixin.innerJoin(target, alias);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <P> JPQLQuery innerJoin(MapExpression<?, P> target) {
-		return join( target );
+	public <P> JPQLMockeryQuery<T> innerJoin(MapExpression<?, P> target) {
+      return queryMixin.innerJoin(target);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <P> JPQLQuery innerJoin(MapExpression<?, P> target, Path<P> alias) {
-		return join( target, alias );
+	public <P> JPQLMockeryQuery<T> innerJoin(MapExpression<?, P> target, Path<P> alias) {
+      return queryMixin.innerJoin(target, alias);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <P> JPQLQuery leftJoin(CollectionExpression<?, P> target,
+	public <P> JPQLMockeryQuery<T> leftJoin(CollectionExpression<?, P> target,
 			Path<P> alias) {
-		queryMixin.leftJoin( target, alias );
-		return this;
+      return queryMixin.leftJoin(target, alias);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <P> JPQLQuery leftJoin(CollectionExpression<?, P> target) {
-		return this;
+	public <P> JPQLMockeryQuery<T> leftJoin(CollectionExpression<?, P> target) {
+      return queryMixin.leftJoin(target);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <P> JPQLQuery leftJoin(EntityPath<P> target) {
-		return this;
+	public <P> JPQLMockeryQuery<T> leftJoin(EntityPath<P> target) {
+      return queryMixin.leftJoin(target);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <P> JPQLQuery leftJoin(EntityPath<P> target, Path<P> alias) {
-		return this;
+	public <P> JPQLMockeryQuery<T> leftJoin(EntityPath<P> target, Path<P> alias) {
+      return queryMixin.leftJoin(target, alias);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <P> JPQLQuery leftJoin(MapExpression<?, P> target) {
-		return this;
+	public <P> JPQLMockeryQuery<T> leftJoin(MapExpression<?, P> target) {
+      return queryMixin.leftJoin(target);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <P> JPQLQuery leftJoin(MapExpression<?, P> target, Path<P> alias) {
-		return this;
+	public <P> JPQLMockeryQuery<T> leftJoin(MapExpression<?, P> target, Path<P> alias) {
+      return queryMixin.leftJoin(target, alias);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <RT> List<RT> list(Expression<RT> projection) {
-		try {
-			projection = queryMixin.convert( projection, true );
-			queryMixin.addProjection( projection );
-			return queryEngine.list( queryMixin.getMetadata(), iterables,
-					projection );
-		} finally {
-			reset();
-		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean notExists() {
-		return !exists();
+	public BooleanExpression notExists() {
+		return exists().not();
 	}
 
 	private void reset() {
 		queryMixin.getMetadata().reset();
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public Tuple singleResult(Expression<?>... args) {
-		return limit( 1 ).uniqueResult( args );
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public JPQLMockeryQuery<Tuple> select(Expression<?>... exprs) {
+        queryMixin.setProjection(exprs);
+        return (JPQLMockeryQuery<Tuple>) queryMixin.getSelf();
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public <RT> RT singleResult(Expression<RT> projection) {
-		return limit( 1 ).uniqueResult( projection );
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public <U> JPQLMockeryQuery<U> select(Expression<U> expr)
+    {
+        queryMixin.setProjection(expr);
+        return (JPQLMockeryQuery<U>) queryMixin.getSelf();
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public Tuple uniqueResult(Expression<?>... args) {
-		return uniqueResult( new QTuple( args ) );
-	}
+    @Override
+    public T fetchOne()
+    {
+      queryMixin.setUnique(true);
+      if (queryMixin.getMetadata().getModifiers().getLimit() == null) {
+          limit(2L);
+      }
+      return uniqueResult(iterate());
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public <RT> RT uniqueResult(Expression<RT> projection) {
-		try {
-			List<RT> resultSet = list( projection );
+    @Override
+    public CloseableIterator<T> iterate()
+    {
+      @SuppressWarnings("unchecked")
+      Expression<T> projection = (Expression<T>) queryMixin.getMetadata().getProjection();
+      return new IteratorAdapter<T>(queryEngine.list(getMetadata(), iterables, projection).iterator());
+    }
 
-			if (resultSet.isEmpty())
-				return null;
+    @Override
+    public QueryMetadata getMetadata()
+    {
+      return queryMixin.getMetadata();
+    }
 
-			if (resultSet.size() != 1)
-				throw new NonUniqueResultException();
-
-			return resultSet.get( 0 );
-		} finally {
-			reset();
-		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public JPQLMockeryQuery where(Predicate... o) {
-		return super.where( o );
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <RT> SearchResults<RT> listResults(Expression<RT> projection) {
-		try {
-			projection = queryMixin.convert( projection, true );
-			queryMixin.addProjection( projection );
-			List<RT> result = queryEngine.list( queryMixin.getMetadata(),
-					iterables, projection );
-			return new SearchResults<RT>( result, queryMixin.getMetadata()
-					.getModifiers(), this.count() );
-		} finally {
-			reset();
-		}
-	}
+    @Override
+    public QueryResults<T> fetchResults()
+    {
+      @SuppressWarnings("unchecked")
+      Expression<T> projection = (Expression<T>) queryMixin.getMetadata().getProjection();
+      long count = queryEngine.count(getMetadata(), iterables);
+      if (count > 0L) {
+          List<T> list = queryEngine.list(getMetadata(), iterables, projection);
+          return new QueryResults<T>(list, getMetadata().getModifiers(), count);
+      } else {
+          return QueryResults.<T>emptyResults();
+      }
+    }
 
 }
